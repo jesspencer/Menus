@@ -5,7 +5,7 @@ class webserverHandler(BaseHTTPRequestHandler):
         try:
             if self.path.endswith("/hello"):
                 self.send_response(200)
-                self.header('Content-type', 'text/html')
+                self.send_header('Content-type', 'text/html')
                 self.end_headers()
 
                 output = ""
