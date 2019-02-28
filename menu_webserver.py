@@ -17,7 +17,44 @@ class webServerHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         try:
             #new if statement
-            if self.path.endswith("/restaurants"):
+            if self.path.endswith("/restaurants/new"):
+                self.send_response(200)
+                self.send_header('Content-type', 'text/html')
+                self.end_headers()
+                output = ""
+                output += "<html><body>"
+                output += "<h1>Make a New Restaurant<h1>"
+                output += "form method = 'POST' enctype = 'multipart/form-data' action = 'restaurants/new'>"
+                output += "<input name = 'newRestaurnatName' type = 'text' placeholder = 'New Restaurant Name'>"
+                output += "<input type = 'submit' value = 'Create'>"
+                output += "</form></body></html>"
+                self.wfile.write(output)
+                return
+
+            if self.path.endswith("restaurants"):
+                restaurants = session.query(Restaurant).all()
+                output = ""
+            #objective step3 - Cretate a Link to create a new menuItem
+                output += "<a href = '/restaurants/new'>Make a New Restaurant Here </a></br></br>"
+                self.send_response(200)
+                self.send_header('Content-type', 'text/html')
+                self.end_headers()
+                output += "<html><body>"
+                for restaurant in restaurants:
+                    output += restaurant.name
+                    output += "</br>"
+                    #obj 2 --add Edit & Delete
+                    output += "<a href = '#'>Edit</a>"
+                    output += "</br>"
+                    output += "<a href = '#'>Delete</a>"
+                    output += "</br></br></br>"
+
+                output += "</body></html>"
+                self.wfile.write(output)
+                return
+        except IOError:
+
+
                 restaurants = session.query(Restaurant).all()
 
                 output = ""
@@ -53,7 +90,7 @@ class webServerHandler(BaseHTTPRequestHandler):
                 messagecontent = fields.get('newRestaurantName')
                 #create new restaurant object
 
-                NewRestaurant = Restaurant(name = messagecontent[0])
+                newRestaurant = Restaurant(name = messagecontent[0])
                 session.add(newRestaurant)
                 session.commit()
 
