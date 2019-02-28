@@ -20,6 +20,8 @@ class webServerHandler(BaseHTTPRequestHandler):
             if self.path.endswith("/restaurants"):
                 restaurants = session.query(Restaurant).all()
 
+                output = ""
+                #link so user can create a new restaurant
                 self.send_response(200)
                 self.send_header('Content-type', 'text/html')
                 self.end_headers()
@@ -41,6 +43,26 @@ class webServerHandler(BaseHTTPRequestHandler):
 
         except IOError:
             self.send_error(404,"File not Found %s" % self.path)
+#objective 3 is to call a get_post method
+    def do_POST(self):
+        try:
+            if self.path.endswith("restaurants/new"):
+                ctype, pdict = cgi.parse_header(self.headers.getheader('content-type'))
+            if ctype == 'multipart/form-data':
+                fields = cgi.parse_multipart(self.rfile, pdict)
+                messagecontent = fields.get('newRestaurantName')
+                #create new restaurant object
+
+                NewRestaurant = Restaurant(name = messagecontent[0])
+                session.add(newRestaurant)
+                session.commit()
+
+                self.send_response(301)
+                self.send_header('Content-type', 'text/html')
+                self.send_header('Location', 'restaurants')
+                self.end_headers()
+        except:
+            pass
 
 def main():
     try:
