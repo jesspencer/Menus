@@ -82,9 +82,10 @@ class webServerHandler(BaseHTTPRequestHandler):
                     output += restaurant.name
                     output += "</br>"
                     #obj 2 --add Edit & Delete
-                    output += "<a href = '#'>Edit</a>"
+                    #replace the Edit href
+                    output += "<a href = '/restaurants/%s/edit'>Edit</a>" % restaurant.id
                     output += "</br>"
-                    output += "<a href = '#'>Delete</a>"
+                    output += "<a href = '/restaurants/%s/'delete'>Delete</a>" %restaurant.id
                     output += "</br></br></br>"
 
                 output += "</body></html>"
