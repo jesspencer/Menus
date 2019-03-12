@@ -1,3 +1,5 @@
+#!usr/bin/#!/usr/bin/env python2.7
+
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 import cgi
 
@@ -5,9 +7,11 @@ import cgi
 from database_setup import Base, Restaurant, MenuItem
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+
 #code that creates the database
 engine = create_engine('sqlite:///restaurantmenu.db')
 Base.metadata.bind= engine
+
 #code that creates the session is imported from menuAdds.py
 DBSession = sessionmaker(bind = engine)
 session = DBSession()
@@ -32,8 +36,7 @@ class webServerHandler(BaseHTTPRequestHandler):
 
             if self.path.endswith("/edit"):
                 restaurantIDPath = self.path.split("/")[2]
-                myRestaurantQuery = session.query(Restaurant).filter_by(
-                    id = restaurantIDPath).one()
+                myRestaurantQuery = session.query(Restaurant).filter_by(id = restaurantIDPath).one()
                 if myRestaurantQuery:
                     self.send_response(200)
                     self.send_header('Content-type', 'text/html')
@@ -42,12 +45,28 @@ class webServerHandler(BaseHTTPRequestHandler):
                     output += "<h1>"
                     output += myRestaurantQuery.name
                     output += "</h1>"
-                    output += "<form method = 'POST' enctype = 'multipart/form-data' action = '/restaurants/%s/edit'>" % restaurantIDPath
+                    output += "<form method = 'POST' enctype = 'multipart/form-data' action = '/restaurants/%s/edit'> " % restaurantIDPath
                     output += "<input name = 'newRestaurantName' type = 'text' placeholder = '%s' >" % myRestaurantQuery.name
                     output += "<input type = 'submit' value = 'Rename'>"
                     output += "</form>"
                     output += "</body></html>"
 
+                    self.wfile.write(output)
+
+            if self.path.endswith("/delete"):
+                restaurantIDPath = self.path.split("/")[2]
+
+                myRestaurantQuery = session.query(Restaurant).filter_by(id = restaurantIDPath).one()
+                if myRestaurantQuery:
+                    self.send_response(200)
+                    self.send_header('Content-type', 'text/html')
+                    self.end_headers()
+                    output = ""
+                    output += "<html><body>"
+                    output += "<h1> Are you sure you want to delete this %s ?" % myRestaurantQuery.name
+                    output += "<form method = 'POST' enctype = 'multipart/form-data' action = '/restaurants/%s/delete'>" %restaurantIDPath
+                    output += "</form>"
+                    output += "</body></html>"
                     self.wfile.write(output)
 
             if self.path.endswith("/restaurants"):
@@ -76,6 +95,17 @@ class webServerHandler(BaseHTTPRequestHandler):
     #Objective 3 Seetp3 --Make Post method
     def do_POST(self):
         try:
+            if self.path.endswith("/delete"):
+                restaurantIDPath = self.path.split("/")[2]
+                myRestaurantQuery = session.query(Restaurant).filter_by(id = restaurantIDPath).one()
+                if myRestaurantQuery:
+                    session.delete(myRestaurantQuery)
+                    session.commit()
+                    self.send_response(301)
+                    self.send_header('Content-type', 'text/html')
+                    self.send_header('Location', '/restaurants')
+                    self.end_headers()
+
             if self.path.endswith("/edit"):
                 ctype, pdict = cgi.parse_header(self.headers.getheader('content-type'))
                 if ctype == 'multipart/form-data':
