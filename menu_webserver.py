@@ -65,7 +65,7 @@ class webServerHandler(BaseHTTPRequestHandler):
                     output += "<html><body>"
                     output += "<h1> Are you sure you want to delete this %s ?" % myRestaurantQuery.name
                     output += "<form method = 'POST' enctype = 'multipart/form-data' action = '/restaurants/%s/delete'>" % restaurantIDPath
-                    output += "input type = 'submit' value = 'Delete'>"
+                    output += "<input type = 'submit' value = 'Delete'>"
                     output += "</form>"
                     output += "</body></html>"
                     self.wfile.write(output)
@@ -149,7 +149,7 @@ def main():
         print "Web Server running on port %s " % port
         server.serve_forever()
     except KeyboardInterrupt:
-        print "^C entered, stopping sever ..."
+        print '^C entered, stopping sever ...'
         server.socket.close()
 
 
