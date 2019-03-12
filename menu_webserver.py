@@ -85,7 +85,7 @@ class webServerHandler(BaseHTTPRequestHandler):
                     #replace the Edit href
                     output += "<a href = '/restaurants/%s/edit'>Edit</a>" % restaurant.id
                     output += "</br>"
-                    output += "<a href = '/restaurants/%s/'delete'>Delete</a>" %restaurant.id
+                    output += "<a href = '/restaurants/%s/delete'>Delete</a>" % restaurant.id
                     output += "</br></br></br>"
 
                 output += "</body></html>"
