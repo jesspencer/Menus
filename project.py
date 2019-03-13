@@ -1,7 +1,6 @@
 from flask import Flask
 app = Flask(__name__)
 #decorator in python
-@app.route('/')
 @app.route('/hello')
 def HelloWorld():
     return "Hello World"
