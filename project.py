@@ -12,7 +12,7 @@ DBSession = sessionmaker(bind = engine)
 session = DBSession()
 
 @app.route('/')
-@app.route('/restaurants<int:restaurant_id/')
+@app.route('/restaurants/<int:restaurant_id/')
 def HelloWorld():
     restaurant = session.query(Restaurant).first()
     items = session.query(MenuItem).filter_by(restaurant_id = restaurant.id)
