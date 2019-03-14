@@ -22,6 +22,14 @@ def HelloWorld():
         output += '</br>'
     return output
 
+    items = session.query(MenuItem).filter_by(price = price.id)
+    output = ''
+    for i in items:
+        output += i.name
+        output += '</br>'
+    return output
+
+    
 if __name__ == '__main__':
     app.debug = True
     #tells the webserver on vagrant to listen on all public ports
